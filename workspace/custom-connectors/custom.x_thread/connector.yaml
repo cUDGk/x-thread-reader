@@ -1,0 +1,6 @@
+id: "custom.x_thread"
+title: "X Thread (no browser)"
+description: "Read an X (Twitter) post, its full author thread, replies, quotes, note tweets and articles over plain HTTPS, without opening the browser."
+include_in_prompt: false
+require_auth: false
+aliases: ["x-thread", "X post fetcher", "Twitter thread fetcher"]

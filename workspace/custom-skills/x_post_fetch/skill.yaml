@@ -1,0 +1,5 @@
+name: "x_post_fetch"
+title: "Read X Posts and Threads"
+description: "Read an X (Twitter) post's full text, author thread, replies, quotes and articles over plain HTTPS with the x_thread helper, without opening the browser."
+category: "Work and knowledge"
+include_in_prompt: true
