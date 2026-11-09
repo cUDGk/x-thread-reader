@@ -1,0 +1,55 @@
+{
+  "id_str": "1900000000000000001",
+  "text": "Example post 1900000000000000001",
+  "created_at": "2025-01-01T00:00:00.000Z",
+  "user": {
+    "screen_name": "example_author"
+  },
+  "in_reply_to_status_id_str": null,
+  "entities": {
+    "urls": [
+      {
+        "url": "https://t.co/exmplcard",
+        "expanded_url": "https://github.com/example/example-repo"
+      }
+    ],
+    "media": []
+  },
+  "mediaDetails": [],
+  "card": {
+    "binding_values": {
+      "title": {
+        "type": "STRING",
+        "string_value": "Example title"
+      },
+      "description": {
+        "type": "STRING",
+        "string_value": "Example description"
+      },
+      "domain": {
+        "type": "STRING",
+        "string_value": "github.com"
+      },
+      "vanity_url": {
+        "type": "STRING",
+        "string_value": "github.com"
+      },
+      "card_url": {
+        "type": "STRING",
+        "string_value": "https://t.co/exmplcard"
+      }
+    }
+  },
+  "quoted_tweet": {
+    "id_str": "1900000000000000009",
+    "text": "Example quote",
+    "user": {
+      "screen_name": "example_quote"
+    },
+    "entities": {
+      "urls": []
+    }
+  },
+  "favorite_count": 10,
+  "conversation_count": 1
+}

@@ -1,0 +1,51 @@
+{
+  "id_str": "1900000000000000003",
+  "text": "Example post 1900000000000000003",
+  "created_at": "2025-01-01T00:00:00.000Z",
+  "user": {
+    "screen_name": "example_author"
+  },
+  "in_reply_to_status_id_str": null,
+  "entities": {
+    "urls": [],
+    "media": []
+  },
+  "mediaDetails": [
+    {
+      "type": "video",
+      "media_url_https": "https://pbs.twimg.com/amplify_video_thumb/1/img/EXAMPLE.jpg",
+      "original_info": {
+        "width": 1280,
+        "height": 720
+      },
+      "video_info": {
+        "duration_millis": 12000,
+        "variants": [
+          {
+            "content_type": "application/x-mpegURL",
+            "url": "https://video.twimg.com/example/playlist.m3u8"
+          },
+          {
+            "content_type": "video/mp4",
+            "bitrate": 256000,
+            "url": "https://video.twimg.com/example/480x270/a.mp4"
+          },
+          {
+            "content_type": "video/mp4",
+            "bitrate": 832000,
+            "url": "https://video.twimg.com/example/640x360/b.mp4"
+          },
+          {
+            "content_type": "video/mp4",
+            "bitrate": 2176000,
+            "url": "https://video.twimg.com/example/1280x720/c.mp4"
+          }
+        ]
+      }
+    }
+  ],
+  "card": null,
+  "quoted_tweet": null,
+  "favorite_count": 0,
+  "conversation_count": 0
+}

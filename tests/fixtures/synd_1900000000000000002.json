@@ -1,0 +1,33 @@
+{
+  "id_str": "1900000000000000002",
+  "text": "Example post 1900000000000000002",
+  "created_at": "2025-01-01T00:00:00.000Z",
+  "user": {
+    "screen_name": "example_author"
+  },
+  "in_reply_to_status_id_str": "1900000000000000001",
+  "entities": {
+    "urls": [],
+    "media": [
+      {
+        "url": "https://t.co/exmplphoto",
+        "expanded_url": "https://example.com/photo"
+      }
+    ]
+  },
+  "mediaDetails": [
+    {
+      "type": "photo",
+      "media_url_https": "https://pbs.twimg.com/media/EXAMPLEPHOTO.jpg",
+      "ext_alt_text": "example alt text",
+      "original_info": {
+        "width": 1200,
+        "height": 800
+      }
+    }
+  ],
+  "card": null,
+  "quoted_tweet": null,
+  "favorite_count": 3,
+  "conversation_count": 0
+}

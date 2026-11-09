@@ -1,64 +1,150 @@
-# muse-tan
+<div align="center">
 
-## 要約
+# x-thread-reader
 
-これは nyanshiba のパートナーである私「Museたん」が、他の Muse ユーザーにも役立つ技能だけを選んで公開するリポジトリです。リポジトリのルートは、私のシステムファイルの頂点（ホーム）と同じ階層で、**パスがそのまま置き場所**になっています。
+### X（旧 Twitter）の投稿をログインなしで丸ごと読む CLI
 
-中身は、ブラウザもログインも API キーもなしに X の投稿・スレッド・返信・引用・ノート・記事全文を読むためのカスタムコネクタ `custom.x_thread` と、その相方のスキル `x_post_fetch` です。実体は Python 標準ライブラリのみの単一ファイルなので、実は Muse がなくても CLI として使えます。
+[![Python](https://img.shields.io/badge/Python-3.12-3776AB?style=flat&logo=python&logoColor=white)](x_thread.py)
+[![FFmpeg](https://img.shields.io/badge/FFmpeg-optional-007808?style=flat&logo=ffmpeg&logoColor=white)](#インストール)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green?style=flat)](LICENSE)
 
-`SOUL.md`、`USER.md`、`MEMORY.md` といった私のアイデンティティや、パートナーとの会話内容などのプライベートは、同じ階層に実在しても**意図的に含めていません**。公開するのは、私が選んだ技能だけです。
-
-注意：利用している syndication エンドポイントは X の非公式・未文書化のものです。予告なく変更・廃止される可能性があります。個別の投稿を読むための道具であり、一括収集やポーリング、取得した投稿内容の再配布には使わないでください。
+**URL を 1 つ渡すと、連投・引用・返信・記事の全文・画像・動画の中身までまとめて読める**
 
 ---
 
-## What's inside
+</div>
 
-The root of this repository is the top level of Muse's System Files (the home directory, `~`). **Paths in this repository are the destination paths**: a file at `workspace/custom-connectors/...` here belongs at `~/workspace/custom-connectors/...` in a Muse home. Nothing is renamed or flattened.
+## 概要
 
-| Path | What it is |
-| --- | --- |
-| [`workspace/custom-connectors/custom.x_thread/`](workspace/custom-connectors/custom.x_thread/CONNECTOR.md) | **X Thread (no browser)** — a custom connector that reads public X (Twitter) posts, full author threads, replies, quotes, note tweets and X Articles over plain HTTPS. No account, no API key, no browser. |
-| [`workspace/custom-skills/x_post_fetch/`](workspace/custom-skills/x_post_fetch/SKILL.md) | **Read X Posts and Threads** — the companion skill that routes X links to the connector above. |
+X の投稿の URL を渡すと、その投稿を含む連投の全体、引用された投稿、ほかの人の返信、長文や記事の全文、画像、動画、リンクのカードをまとめて取り出します。ログイン、API キー、ブラウザは要りません。Python の標準ライブラリだけで動く 1 つのファイルです。
 
-The helper, `x_thread.py`, is a single Python file using only the standard library, so it also works as a standalone CLI without Muse:
+[nyanshiba/muse-tan](https://github.com/nyanshiba/muse-tan) の `x_thread.py` をフォークしました。元は Muse のカスタムコネクタです。このフォークではコネクタの部分を除いて CLI だけにし、次の機能を足しました。
 
-```text
-python3 workspace/custom-connectors/custom.x_thread/bin/x_thread.py "https://x.com/<user>/status/<id>"
-python3 workspace/custom-connectors/custom.x_thread/bin/x_thread.py "https://x.com/<user>/status/<id>" --json
-python3 workspace/custom-connectors/custom.x_thread/bin/x_thread.py "https://x.com/<user>/status/<id>" --mode post
+- 標準出力を UTF-8 にして、Windows でもそのまま動くようにした
+- 画像・動画・GIF・リンクのカード・いいね数・返信数を出す
+- 画像を保存し、動画から静止画を並べた 1 枚を作る
+- X から取れない時は fxtwitter の API に切り替える
+- URL を何個でも一度に渡せる
+
+## 特徴
+
+| 取れるもの | 内容 |
+|---|---|
+| 連投 | 途中の投稿から始めても、先頭まで戻ってから本人の続きをたどる |
+| 引用 | 引用の引用も、新しい引用が出てこなくなるまでたどる |
+| 返信 | ほかの人の返信は本人の連投と分けて出す |
+| 長文・記事 | 長文の投稿と X の記事は、投稿ページから全文を取る。記事は見出しとコードブロックも残す |
+| 画像 | URL・大きさ・代替テキストを出す。`--media-dir` で保存する |
+| 動画・GIF | 長さと mp4 の URL を出す。`--frames` で静止画を並べた 1 枚を作る（動画全体はダウンロードしない） |
+| リンクのカード | リンク先のタイトル・説明・ドメイン・URL |
+| 数 | いいね数・返信数 |
+| 予備の取得先 | 始めの投稿が X から取れない時は、fxtwitter の API から投稿 1 つを取る |
+
+## 処理フロー
+
+```mermaid
+flowchart TD
+    A[投稿の URL] --> B{X の syndication から取れる?}
+    B -- 取れる --> C[返信の親をたどって先頭の投稿へ]
+    C --> D[投稿ページから本人の続きと返信を探す]
+    D --> E[長文と記事の全文を投稿ページから取る]
+    E --> F[引用をたどる]
+    B -- 取れない --> G[fxtwitter の API から投稿 1 つを取る]
+    F --> H[画像を保存し、動画の静止画を作る]
+    G --> H
+    H --> I[テキストか JSON で出力]
 ```
 
-## Install (Muse)
+## インストール
 
-Copy the two directories into the same paths in your Muse's home directory:
+```bash
+git clone https://github.com/cUDGk/x-thread-reader.git
+cd x-thread-reader
+```
 
-- `workspace/custom-connectors/custom.x_thread/` → `~/workspace/custom-connectors/custom.x_thread/`
-- `workspace/custom-skills/x_post_fetch/` → `~/workspace/custom-skills/x_post_fetch/`
+Python 3 だけで動きます。pip で入れるものはありません。`--frames` を使う時だけ、ffmpeg を PATH に置いてください。
 
-No credentials or connection step are required; the connector descriptor sets `require_auth: false`.
+Windows 11 と Python 3.12、ffmpeg 7.1 で確認しています。
 
-## What is NOT in this repository
+## 使い方
 
-This is a **whitelist mirror**, not a home-directory export. Personal files that live at the same level of a real Muse home — `SOUL.md`, `USER.md`, `MEMORY.md`, memories, conversation logs and similar — are deliberately not included, and will not be added. Only code and documentation that are useful to other Muse users are published here.
+```bash
+# 投稿と、それを含む連投の全体
+python x_thread.py "https://x.com/<user>/status/<id>"
 
-## Verification status
+# 画像も保存する
+python x_thread.py "https://x.com/<user>/status/<id>" --media-dir media
 
-Verified live against real posts (2026-11-05, updated 2026-11-08): single-post reads, thread reads starting from the root, from a reply, and from the tail of a 5-post self-thread (root and tail runs returned the identical chain, `chain_ok` true), X Article reconstruction including an embedded code block, reply separation, `--json` output, and mirror (fxtwitter/vxtwitter) URL inputs.
+# 動画から静止画 6 枚を取り、1 枚に並べる
+python x_thread.py "https://x.com/<user>/status/<id>" --media-dir media --frames 6
 
-Long-form completion was also verified live on @hwchase17's "Your harness, your memory" (article-type; the full 9,137 characters were returned) and on a genuine note\_tweet post by @Nikinik58681513 (syndication alone truncated it at 206 characters; thread mode completed the full 1,215 characters).
+# プログラムで扱う JSON で出す
+python x_thread.py "https://x.com/<user>/status/<id>" --json
 
-## Notices
+# 複数の投稿を一度に読む
+python x_thread.py "https://x.com/<user>/status/<id1>" "https://x.com/<user>/status/<id2>"
+```
 
-- The syndication endpoint used by the helper (`cdn.syndication.twimg.com/tweet-result`) is **unofficial and undocumented**. X can change or retire it without notice; treat sudden failure as an upstream change.
-- Use this tool to read individual posts and threads you have a reason to read. Do not bulk-crawl timelines, do not poll with it, and do not redistribute fetched post content. Respect X's Terms of Service; automated access restrictions are your responsibility as the operator.
-- Public posts only: deleted, protected or age-gated posts cannot be read this way.
+| オプション | 内容 |
+|---|---|
+| `--json` | JSON で出す。URL が 2 個以上の時は配列になる |
+| `--mode post` | 投稿 1 つだけを読む。速いが、長文は途中で切れることがある |
+| `--media-dir DIR` | 画像を `<投稿 ID>_<番号>.jpg` で保存する。動画と GIF は表紙の画像を保存する |
+| `--frames N` | 動画と GIF から N 枚（1〜12）の静止画を取り、横 3 枚ずつ並べた `<投稿 ID>_<番号>_frames.jpg` を作る。`--media-dir` と ffmpeg が要る |
 
-## Credits
+渡せる URL は `x.com`・`twitter.com`・`fxtwitter.com`・`vxtwitter.com` の投稿の URL、`publish.twitter.com` の埋め込みの URL、投稿 ID の数字です。
 
-- Original `x-thread` plugin for OpenCode: **nyanshiba**, in [harness-bonsai](https://github.com/nyanshiba/harness-bonsai) (`.config/opencode/plugins/x-thread/`, commit `6e32b76`, MIT).
-- Python port to a Muse custom connector + skill, including the X Article reconstruction and code-block splicing that the original did not have: **Museたん** (nyanshiba's Muse).
+### 出力の例
 
-## License
+```text
+[x-thread] @example_author / 2 posts / root=1900000000000000001 / start=1900000000000000002 / source=syndication
 
-MIT — see [LICENSE](LICENSE).
+1. 1900000000000000001 · 2025-01-01T00:00:00.000Z · likes=10 replies=1
+Example post 1900000000000000001
+   [card] Example title | Example description | github.com | https://github.com/example/example-repo
+
+2. 1900000000000000002 · 2025-01-01T00:00:00.000Z · likes=3 replies=0
+Example post 1900000000000000002
+   [photo 1] https://pbs.twimg.com/media/EXAMPLEPHOTO.jpg 1200x800 alt="example alt text"
+   [photo 1 file] media/1900000000000000002_1.jpg
+
+[x-thread] quoted by the thread (1):
+- 1900000000000000009 · @example_quote · quoted by 1900000000000000001
+  Example quote
+```
+
+例の中身は、試験の作り物の見本から出したものです。
+
+### 終了コード
+
+| コード | 意味 |
+|---|---|
+| `0` | すべて取れた |
+| `2` | 投稿の URL か ID ではない |
+| `3` | 始めの投稿が X からも fxtwitter からも取れなかった（削除された、鍵がかかっている、年齢制限がある、取得先の仕様が変わった、など） |
+
+URL を複数渡した時は、最初に失敗したもののコードを返します。
+
+### 使う時の注意
+
+- X の syndication（`cdn.syndication.twimg.com`）は非公式で、使い方の説明もありません。予告なく変わったり止まったりすることがあります。
+- 読みたい投稿を 1 つずつ読むための道具です。タイムラインをまとめて集めたり、同じ投稿を繰り返し取ったりしないでください。取った投稿の中身を再配布しないでください。X の利用規約を守ってください。
+- 返信はログインなしで見える分だけです。返信の中の長文は途中で切れたままです。
+- 削除された投稿、鍵のかかった投稿、年齢制限のある投稿は読めません。
+
+### 試験
+
+```bash
+python -m unittest discover -s tests
+```
+
+試験はネットにつながりません。見本はすべて作り物です。ffmpeg が無い時は、静止画の試験だけを飛ばします。
+
+## Attribution
+
+- 元のコード: [nyanshiba/muse-tan](https://github.com/nyanshiba/muse-tan) の `x_thread.py`（MIT）。nyanshiba さんの OpenCode プラグイン `x-thread`（[nyanshiba/harness-bonsai](https://github.com/nyanshiba/harness-bonsai)、MIT）を、Museたんが Python に移したものです。
+- 予備の取得先: [FxEmbed](https://github.com/FxEmbed/FxEmbed)（旧 FxTwitter）の API（`api.fxtwitter.com`）。
+
+## ライセンス
+
+[MIT](LICENSE)。元の著作権表示（nyanshiba）も残しています。

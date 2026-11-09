@@ -1,0 +1,51 @@
+{
+  "code": 200,
+  "tweet": {
+    "id": "1900000000000000004",
+    "text": "Example post 1900000000000000004",
+    "author": {
+      "screen_name": "example_author"
+    },
+    "created_timestamp": 1735689600,
+    "likes": 0,
+    "replies": 0,
+    "replying_to_status": null,
+    "media": {
+      "all": []
+    },
+    "card": null,
+    "quote": null,
+    "article": {
+      "title": "Example article",
+      "preview_text": "Example preview",
+      "content": {
+        "blocks": [
+          {
+            "type": "header-two",
+            "text": "Section one"
+          },
+          {
+            "type": "unstyled",
+            "text": "Example paragraph one."
+          },
+          {
+            "type": "unstyled",
+            "text": "Example paragraph two."
+          },
+          {
+            "type": "atomic",
+            "text": "Example atomic content"
+          },
+          {
+            "type": "header-two",
+            "text": "Section two"
+          },
+          {
+            "type": "unstyled",
+            "text": "Example paragraph three."
+          }
+        ]
+      }
+    }
+  }
+}

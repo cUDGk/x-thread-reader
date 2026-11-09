@@ -1,0 +1,28 @@
+{
+  "code": 200,
+  "tweet": {
+    "id": "1900000000000000002",
+    "text": "Example post 1900000000000000002",
+    "author": {
+      "screen_name": "example_author"
+    },
+    "created_timestamp": 1735689600,
+    "likes": 3,
+    "replies": 0,
+    "replying_to_status": "1900000000000000001",
+    "media": {
+      "all": [
+        {
+          "type": "photo",
+          "url": "https://pbs.twimg.com/media/EXAMPLEPHOTO.jpg?name=orig",
+          "altText": "example alt text",
+          "width": 1200,
+          "height": 800
+        }
+      ]
+    },
+    "card": null,
+    "quote": null,
+    "article": null
+  }
+}

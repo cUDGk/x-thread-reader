@@ -1,0 +1,57 @@
+{
+  "code": 200,
+  "tweet": {
+    "id": "1900000000000000001",
+    "text": "Example post 1900000000000000001",
+    "author": {
+      "screen_name": "example_author"
+    },
+    "created_timestamp": 1735689600,
+    "likes": 10,
+    "replies": 1,
+    "replying_to_status": null,
+    "media": {
+      "all": []
+    },
+    "card": {
+      "title": "Example title",
+      "description": "Example description",
+      "domain": "github.com",
+      "url": "https://github.com/example/example-repo"
+    },
+    "quote": {
+      "id": "1900000000000000009",
+      "text": "Example post 1900000000000000009",
+      "author": {
+        "screen_name": "example_author"
+      },
+      "created_timestamp": 1735689600,
+      "likes": 0,
+      "replies": 0,
+      "replying_to_status": null,
+      "media": {
+        "all": []
+      },
+      "card": null,
+      "quote": {
+        "id": "1900000000000000010",
+        "text": "Example post 1900000000000000010",
+        "author": {
+          "screen_name": "example_author"
+        },
+        "created_timestamp": 1735689600,
+        "likes": 0,
+        "replies": 0,
+        "replying_to_status": null,
+        "media": {
+          "all": []
+        },
+        "card": null,
+        "quote": null,
+        "article": null
+      },
+      "article": null
+    },
+    "article": null
+  }
+}
